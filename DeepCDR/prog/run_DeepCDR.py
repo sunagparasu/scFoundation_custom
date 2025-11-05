@@ -1,5 +1,6 @@
 import argparse
-import random,os
+import random
+import os
 import numpy as np
 import csv
 import pandas as pd
@@ -10,9 +11,7 @@ from scipy.stats import pearsonr,spearmanr
 from model import KerasMultiSourceGCNModel
 import hickle as hkl
 import scipy.sparse as sp
-import argparse
 from tqdm import tqdm
-from keras import backend as K
 print('GPU',K.tensorflow_backend._get_available_gpus())
 
 ####################################Settings#################################
@@ -96,7 +95,7 @@ def MetadataGenerate(Drug_info_file,Cell_line_info_file,Genomic_mutation_file,Dr
     #only keep overlapped cell lines
     mutation_feature = mutation_feature.loc[list(gexpr_feature.index)]
     
-    #load methylation 
+    #load methylation
     methylation_feature = pd.read_csv(Methylation_file,sep=',',header=0,index_col=[0])
     assert methylation_feature.shape[0]==gexpr_feature.shape[0]==mutation_feature.shape[0]        
     experiment_data = pd.read_csv(Cancer_response_exp_file,sep=',',header=0,index_col=[0])
@@ -287,7 +286,17 @@ def main():
         X_drug_feat_data_test = [item[0] for item in X_drug_data_test]
         X_drug_adj_data_test = [item[1] for item in X_drug_data_test]
         X_drug_feat_data_test = np.array(X_drug_feat_data_test)#nb_instance * Max_stom * feat_dim
-        X_drug_adj_data_test = np.array(X_drug_adj_data_test)#nb_instance * Max_stom * Max_stom  
+        X_drug_adj_data_test = np.array(X_drug_adj_data_test)#nb_instance * Max_stom * Max_stom
+
+        # Custom code
+        print("arg1: ", X_drug_data_test[0][0].shape[-1])
+        print("arg2: ", X_mutation_data_test.shape[-2])
+        print("arg3: ", X_gexpr_data_test.shape[-1])
+        print("arg4: ", X_methylation_data_test.shape[-1]) # args.unit_list,args.use_relu,args.use_bn,args.use_GMP
+        print("arg5: ", args.unit_list)
+        print("arg6: ", args.use_relu)
+        print("arg7: ", args.use_bn)
+        print("arg8: ", args.use_GMP)
         
         validation_data = [[X_drug_feat_data_test,X_drug_adj_data_test,X_mutation_data_test,X_gexpr_data_test,X_methylation_data_test],Y_test]
         model = KerasMultiSourceGCNModel(use_mut,use_gexp,use_methy).createMaster(X_drug_data_test[0][0].shape[-1],X_mutation_data_test.shape[-2],X_gexpr_data_test.shape[-1],X_methylation_data_test.shape[-1],args.unit_list,args.use_relu,args.use_bn,args.use_GMP)
