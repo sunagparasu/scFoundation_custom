@@ -287,16 +287,6 @@ def main():
         X_drug_adj_data_test = [item[1] for item in X_drug_data_test]
         X_drug_feat_data_test = np.array(X_drug_feat_data_test)#nb_instance * Max_stom * feat_dim
         X_drug_adj_data_test = np.array(X_drug_adj_data_test)#nb_instance * Max_stom * Max_stom
-
-        # Custom code
-        print("arg1: ", X_drug_data_test[0][0].shape[-1])
-        print("arg2: ", X_mutation_data_test.shape[-2])
-        print("arg3: ", X_gexpr_data_test.shape[-1])
-        print("arg4: ", X_methylation_data_test.shape[-1]) # args.unit_list,args.use_relu,args.use_bn,args.use_GMP
-        print("arg5: ", args.unit_list)
-        print("arg6: ", args.use_relu)
-        print("arg7: ", args.use_bn)
-        print("arg8: ", args.use_GMP)
         
         validation_data = [[X_drug_feat_data_test,X_drug_adj_data_test,X_mutation_data_test,X_gexpr_data_test,X_methylation_data_test],Y_test]
         model = KerasMultiSourceGCNModel(use_mut,use_gexp,use_methy).createMaster(X_drug_data_test[0][0].shape[-1],X_mutation_data_test.shape[-2],X_gexpr_data_test.shape[-1],X_methylation_data_test.shape[-1],args.unit_list,args.use_relu,args.use_bn,args.use_GMP)
